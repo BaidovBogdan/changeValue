@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
-import GetValue from './getValue';
 
 function GetChangeValue() {
     const [exchangeRateUSD, setExchangeRateUSD] = useState(null);
+    const [semiValue , setSemiValue] = useState(0);
+    const [Value , setValue] = useState(0);
+
     const baseCurrency = 'USD'; 
 
     useEffect(() => {
@@ -16,7 +18,7 @@ function GetChangeValue() {
                     throw new Error('Failed to fetch exchange rates');
                 }
                 const data = await response.json();
-                setExchangeRateUSD(data.conversion_rates.KG);
+                setExchangeRateUSD(data.conversion_rates.KGS);
             } catch (error) {
                 console.error(error);
             }
@@ -24,8 +26,19 @@ function GetChangeValue() {
         fetchExchangeRates();
     }, [baseCurrency]);
 
+    const getValueFromInp = (click) => {
+        if (click.key === "Enter") {
+            setExchangeRateUSD( exchangeRateUSD * semiValue);
+        }
+    }
+
+    console.log(+semiValue);
     return (
         <div>
+            <input type='text'
+            placeholder='сколько?' 
+            onChange={e => setSemiValue(e.target.value)} 
+            onKeyDown={getValueFromInp}/>
             <p>Курс доллара к рублю: {Math.round(exchangeRateUSD)}</p>
         </div>
     );
